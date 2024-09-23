@@ -44,7 +44,7 @@ const PlayerActions = ({ onAction }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           type="submit"
-          className="w-full bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+          className="w-1/2 flex mx-auto items-center justify-center bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
         >
           Submit Action
         </motion.button>

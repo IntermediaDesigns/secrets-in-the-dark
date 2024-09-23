@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import CharacterProfile from "./CharacterProfile";
 import EvidenceLog from "./EvidenceLog";
 import GameMap from "./GameMap";
 import PlayerActions from "./PlayerActions";
+import Tutorial from "./Tutorial";
 
 const GameInterface = ({ gameState, onAction }) => {
   const [aiResponse, setAiResponse] = useState("");
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    console.log("Story title:", gameState.storyElements?.title);
+  }, [gameState.storyElements?.title]);
 
   const handleAction = async (action) => {
     setAiResponse("Processing your action...");
@@ -24,17 +30,53 @@ const GameInterface = ({ gameState, onAction }) => {
     handleAction(`Move to ${newLocation}`);
   };
 
+  const toggleTutorial = () => {
+    setShowTutorial(!showTutorial);
+  };
+
+  const handleTutorialComplete = () => {
+    setShowTutorial(false);
+  };
+
+  const fallbackTitle = "Untitled Mystery";
+
   return (
-    <div className="flex flex-col h-screen mb-12" >
+    <div className="flex flex-col h-screen mb-12">
       <motion.header
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-theme p-4 flex justify-between items-center"
+        className="text-theme px-8 py-4 flex justify-between items-center"
       >
-        <h1 className="text-white text-2xl font-bold">Interactive Murder Mystery</h1>
-        <div className="flex items-center space-x-4 text-white">
-          <motion.p whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+        <div className="flex items-center">
+          <h1 className="text-white text-2xl font-bold mr-4">
+            Murder Mystery ~
+          </h1>
+          {(gameState.storyElements?.title || fallbackTitle) && (
+            <motion.h2
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-purple-300 text-3xl font-bold italic"
+            >
+              {gameState.storyElements?.title || fallbackTitle}
+            </motion.h2>
+          )}
+        </div>
+        <div className="flex items-center">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-purple-600 text-white px-4 py-2 rounded-md mx-4"
+            onClick={toggleTutorial}
+          >
+            Show Tutorial
+          </motion.button>
+          <motion.p
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="text-white"
+          >
             Score: {gameState.score}
           </motion.p>
         </div>
@@ -75,15 +117,32 @@ const GameInterface = ({ gameState, onAction }) => {
             <PlayerActions onAction={handleAction} />
           </div>
         </motion.div>
+        <div>
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="w-80 ml-4 mt-2 bg-theme p-4 overflow-y-auto rounded"
+          className="w-80 ml-4 mt-2 bg-theme p-4 h-1/2 rounded flex flex-col"
         >
           <EvidenceLog evidence={gameState.playerProgress.collectedEvidence} />
         </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="w-80 ml-4 mt-4 bg-theme px-4 rounded pb-4"
+        >
+          <h2 className="text-xl font-bold mb-2 text-center text-purple-700 pt-4">
+            Crime Scene Description
+          </h2>
+          <p className="text-sm text-gray-600">
+            {gameState.storyElements.crimeSceneDescription ||
+              "No description available."}
+          </p>
+        </motion.div>
+        </div>
       </main>
+      {showTutorial && <Tutorial onComplete={handleTutorialComplete} />}
     </div>
   );
 };

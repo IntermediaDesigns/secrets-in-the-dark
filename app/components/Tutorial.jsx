@@ -35,6 +35,10 @@ const Tutorial = ({ onComplete }) => {
     }
   };
 
+  const skipTutorial = () => {
+    onComplete();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -55,14 +59,24 @@ const Tutorial = ({ onComplete }) => {
             <p className='text-gray-800 text-center'>{tutorialSteps[currentStep].content}</p>
           </motion.div>
         </AnimatePresence>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={nextStep}
-          className="mt-6 bg-purple-500 text-white px-4 py-2 rounded flex mx-auto hover:bg-purple-600"
-        >
-          {currentStep < tutorialSteps.length - 1 ? "Next" : "Start Game"}
-        </motion.button>
+        <div className="mt-6 flex justify-center space-x-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={nextStep}
+            className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+          >
+            {currentStep < tutorialSteps.length - 1 ? "Next" : "Start Game"}
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={skipTutorial}
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Skip Tutorial
+          </motion.button>
+        </div>
       </div>
     </motion.div>
   );

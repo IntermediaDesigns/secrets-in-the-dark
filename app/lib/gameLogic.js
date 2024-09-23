@@ -9,6 +9,8 @@ const DEFAULT_LOCATIONS = [
   "City Hall",
 ];
 
+const DEFAULT_STORY_TITLE = "The Unsolved Mystery";
+
 const difficultySettings = {
   easy: {
     evidenceCount: 5,
@@ -42,11 +44,15 @@ export async function initializeGame(userId, difficulty = "medium") {
           ? storyElements.locations
           : DEFAULT_LOCATIONS;
 
+      // Ensure there's a title, use default if not provided
+      const title = storyElements.title || DEFAULT_STORY_TITLE;
+
       const initialGameState = {
         userId,
         storyElements: {
           ...storyElements,
           locations, // Ensure locations are always present
+          title, // Ensure title is always present
         },
         playerProgress: {
           currentLocation: locations[0],

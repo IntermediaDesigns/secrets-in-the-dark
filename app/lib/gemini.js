@@ -33,14 +33,16 @@ export async function generateStoryElements() {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
   const prompt = `Generate a murder mystery scenario including:
-  1. A brief description of the crime scene
-  2. A list of 3-5 suspects with short descriptions
-  3. A list of 5-7 key pieces of evidence
-  4. A list of 4-6 locations relevant to the case
-  5. The solution to the mystery (who did it and why)
+  1. A catchy title for the mystery
+  2. A brief description of the crime scene
+  3. A list of 3-5 suspects with short descriptions
+  4. A list of 5-7 key pieces of evidence
+  5. A list of 4-6 locations relevant to the case
+  6. The solution to the mystery (who did it and why)
 
   Format the output as a JSON object with the following structure:
   {
+    "title": "string",
     "crimeScene": "string",
     "suspects": [{"name": "string", "description": "string"}],
     "evidence": [{"item": "string", "description": "string"}],
