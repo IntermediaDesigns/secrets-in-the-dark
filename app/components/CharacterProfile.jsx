@@ -8,8 +8,8 @@ const CharacterProfile = ({ characters }) => {
       </h2>
       <div className="space-y-6 py-4 bg-theme2 rounded">
         {characters.map((character, index) => (
-          <div key={index} className="bg-white p-4 rounded shadow mx-2">
-            <h3 className="text-lg font-semibold text-purple-400">
+          <div key={index} className="bg-white p-4 rounded shadow-lg mx-2">
+            <h3 className="text-lg font-semibold text-black">
               {character.name}
             </h3>
             <p className="text-sm text-gray-600">{character.description}</p>
