@@ -49,9 +49,7 @@ const GameInterface = ({ gameState, onAction }) => {
         className="text-theme px-8 py-4 flex justify-between items-center"
       >
         <div className="flex items-center">
-          <h1 className="text-white text-2xl font-bold mr-4">
-            Murder Mystery ~
-          </h1>
+          <h1 className="text-white text-2xl font-bold mr-4">Murder Mystery ~</h1>
           {(gameState.storyElements?.title || fallbackTitle) && (
             <motion.h2
               initial={{ opacity: 0, scale: 0.9 }}
@@ -126,12 +124,7 @@ const GameInterface = ({ gameState, onAction }) => {
         >
           <EvidenceLog evidence={gameState.playerProgress.collectedEvidence} />
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="w-80 ml-4 mt-4 bg-theme px-4 rounded pb-4"
-        >
+        <div className="w-80 ml-4 mt-4 bg-theme px-4 rounded pb-4">
           <h2 className="text-xl font-bold mb-2 text-center text-purple-700 pt-4">
             Crime Scene Description
           </h2>
@@ -139,7 +132,7 @@ const GameInterface = ({ gameState, onAction }) => {
             {gameState.storyElements.crimeSceneDescription ||
               "No description available."}
           </p>
-        </motion.div>
+        </div>
         </div>
       </main>
       {showTutorial && <Tutorial onComplete={handleTutorialComplete} />}

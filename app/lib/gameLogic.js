@@ -128,6 +128,10 @@ export async function performAction(userId, gameState, action) {
         ...gameState.playerProgress,
         ...result.gameStateUpdates.playerProgress,
       },
+      storyElements: {
+        ...gameState.storyElements,
+        ...result.gameStateUpdates.storyElements,
+      },
     };
 
     await saveGame(userId, updatedGameState);
@@ -182,3 +186,4 @@ function calculateScore(gameState) {
     gameState.scoreMultiplier
   );
 }
+
