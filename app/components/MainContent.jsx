@@ -38,7 +38,7 @@ const MainContent = ({ children }) => {
   return (
     <>
       <Navbar user={user} />
-      <main className="container mx-auto mt-4">{children}</main>
+      <main>{children}</main>
     </>
   );
 };

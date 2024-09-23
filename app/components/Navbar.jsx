@@ -18,12 +18,12 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-transparent fixed w-full">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-white text-2xl font-bold">
-          Secrets in the Dark
+          <img src="/secret-logo.png" alt="logo" className="w-28 h-auto pt-2" />
         </Link>
-        <div>
+        <div className="mt-2">
           {user ? (
             <div className="flex items-center gap-8">
               <span className="text-white mr-4">Welcome, {user.name}</span>
