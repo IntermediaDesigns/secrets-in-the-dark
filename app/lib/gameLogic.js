@@ -88,64 +88,80 @@ export async function initializeGame(userId, difficulty = "medium") {
 
 export async function performAction(userId, gameState, action) {
   try {
-    console.log("Performing action:", action);
+    console.log("gameLogic: Performing action:", action);
+
+    let updatedGameState = { ...gameState };
+    let storyUpdate = "";
+    let newEvidenceAdded = false;
 
     if (action.startsWith("Move to ")) {
       const newLocation = action.replace("Move to ", "");
       console.log("Attempting to move to:", newLocation);
-      
+
       if (gameState.playerProgress.unlockedLocations.includes(newLocation)) {
         console.log("Location is unlocked, updating game state");
-        const updatedGameState = {
+        updatedGameState = {
           ...gameState,
           playerProgress: {
             ...gameState.playerProgress,
             currentLocation: newLocation,
           },
         };
-        await saveGame(userId, updatedGameState);
-        return {
-          updatedGameState,
-          storyUpdate: `You have moved to ${newLocation}. ${getLocationDescription(newLocation)}`,
-        };
+        storyUpdate = `You have moved to ${newLocation}. ${getLocationDescription(
+          newLocation
+        )}`;
       } else {
         console.log("Location is not unlocked");
-        return {
-          updatedGameState: gameState,
-          storyUpdate: "You cannot move to that location yet. Try investigating your current location further or collecting more evidence.",
-        };
+        storyUpdate =
+          "You cannot move to that location yet. Try investigating your current location further or collecting more evidence.";
+      }
+    } else {
+      // For non-move actions, process with AI
+      console.log("gameLogic: Processing with AI");
+      const result = await processPlayerAction(gameState, action);
+      console.log("gameLogic: AI processing result:", result);
+
+      if (!result || !result.storyUpdate) {
+        throw new Error("Invalid response from AI. Please try again.");
+      }
+
+      storyUpdate = result.storyUpdate;
+
+      if (result.newEvidence) {
+        const isDuplicate = updatedGameState.playerProgress.collectedEvidence.some(
+          evidence => evidence.item === result.newEvidence.item
+        );
+
+        if (!isDuplicate) {
+          updatedGameState = {
+            ...updatedGameState,
+            playerProgress: {
+              ...updatedGameState.playerProgress,
+              collectedEvidence: [
+                ...updatedGameState.playerProgress.collectedEvidence,
+                result.newEvidence
+              ]
+            }
+          };
+          newEvidenceAdded = true;
+          storyUpdate += `\n\nNew evidence found: ${result.newEvidence.item}`;
+        } else {
+          storyUpdate += `\n\nYou've already collected this evidence: ${result.newEvidence.item}`;
+        }
       }
     }
 
-    // For non-move actions, process with AI
-    const result = await processPlayerAction(gameState, action);
-    
-    if (!result || !result.storyUpdate || !result.gameStateUpdates) {
-      throw new Error("Invalid response from AI. Please try again.");
-    }
-
-    const updatedGameState = {
-      ...gameState,
-      ...result.gameStateUpdates,
-      playerProgress: {
-        ...gameState.playerProgress,
-        ...result.gameStateUpdates.playerProgress,
-      },
-      storyElements: {
-        ...gameState.storyElements,
-        ...result.gameStateUpdates.storyElements,
-      },
-    };
-
     await saveGame(userId, updatedGameState);
 
-    return {
+    console.log("gameLogic: Returning from performAction:", {
       updatedGameState,
-      storyUpdate: result.storyUpdate,
-    };
+      storyUpdate,
+      newEvidenceAdded,
+    });
+    return { updatedGameState, storyUpdate, newEvidenceAdded };
   } catch (error) {
-    console.error("Error performing action:", error);
-    throw new Error("Failed to process action. Please try again later.");
+    console.error("gameLogic: Error performing action:", error);
+    throw error;
   }
 }
 
@@ -189,4 +205,3 @@ function calculateScore(gameState) {
     gameState.scoreMultiplier
   );
 }
-

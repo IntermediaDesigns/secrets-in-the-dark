@@ -65,20 +65,20 @@ const GamePage = () => {
     async (action) => {
       if (!gameState) return;
 
-      setLoading(true);
       try {
-        const { updatedGameState, storyUpdate } = await performAction(
-          gameState.userId,
-          gameState,
-          action
-        );
-        setGameState(updatedGameState);
-        // Handle storyUpdate (e.g., display it to the user)
+        console.log("GamePage: Calling performAction with:", action);
+        const result = await performAction(gameState.userId, gameState, action);
+        console.log("GamePage: Result from performAction:", result);
+
+        if (result && result.updatedGameState) {
+          setGameState(result.updatedGameState);
+        }
+
+        return result; // Make sure to return the result
       } catch (err) {
         console.error("Error processing action:", err);
         setError(err.message || "Failed to process action. Please try again.");
-      } finally {
-        setLoading(false);
+        throw err; // Re-throw the error so it can be caught in GameInterface
       }
     },
     [gameState]
@@ -111,16 +111,15 @@ const GamePage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-[90.1vh]" style={{ backgroundImage: "url('/bkg.png')" }}>
-      <main className={`flex-grow`}>
+    <div
+      className="flex flex-col min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/bkg.png')", backgroundSize: "100% 100%" }}
+    >
+      <main className="flex-grow">
         {showSetup && <GameSetup onStartGame={handleStartGame} />}
         {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
         {gameState && (
-          <GameInterface
-            gameState={gameState}
-            onAction={updateGameState}
-            updateGameState={updateGameState}
-          />
+          <GameInterface gameState={gameState} onAction={handleAction} />
         )}
       </main>
       {gameState && <Footer gameState={gameState} />}

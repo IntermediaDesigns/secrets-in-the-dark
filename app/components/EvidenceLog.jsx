@@ -1,26 +1,43 @@
 import React from "react";
+import { motion } from "framer-motion";
 
-const EvidenceLog = ({ evidence }) => {
+const EvidenceLog = ({ evidence, newEvidence }) => {
   return (
-    <>
-      <h2 className="text-xl font-bold mb-2 text-center text-purple-700 p-2">
+    <div>
+      <h2 className="text-xl font-bold mb-2 text-purple-700 text-center">
         Evidence Log
       </h2>
-      <div className="bg-theme2 px-4 rounded pb-4">
-        {evidence.length === 0 ? (
-          <li className="text-theme py-4">No evidence collected yet.</li>
-        ) : (
-          <ul className="space-y-2">
-            {evidence.map((item, index) => (
-              <li key={index} className="bg-white p-2 rounded shadow">
-                <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-sm text-theme">{item.description}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </>
+      {evidence.length === 0 ? (
+        <p className="text-gray-600">No evidence collected yet.</p>
+      ) : (
+        <ul className="space-y-2">
+          {evidence.map((item, index) => (
+            <motion.li
+              key={index}
+              className={`bg-white p-2 rounded shadow ${
+                newEvidence && newEvidence.item === item.item
+                  ? "border-2 border-yellow-500"
+                  : ""
+              }`}
+              initial={
+                newEvidence && newEvidence.item === item.item
+                  ? { scale: 0.9 }
+                  : {}
+              }
+              animate={
+                newEvidence && newEvidence.item === item.item
+                  ? { scale: 1 }
+                  : {}
+              }
+              transition={{ duration: 0.3 }}
+            >
+              <h3 className="font-semibold">{item.item}</h3>
+              <p className="text-sm text-gray-600">{item.description}</p>
+            </motion.li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 

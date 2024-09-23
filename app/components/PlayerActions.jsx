@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
-const PlayerActions = ({ onAction }) => {
-  const [action, setAction] = useState('');
-  const [error, setError] = useState('');
+const PlayerActions = ({ onAction, isLoading }) => {
+  const [action, setAction] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Ensure this line is present
     if (action.trim().length < 3) {
-      setError('Action must be at least 3 characters long');
+      setError("Action must be at least 3 characters long");
       return;
     }
-    if (action.trim().length > 100) {
-      setError('Action must be no more than 100 characters long');
+    if (action.trim().length > 200) {
+      setError("Action must be no more than 200 characters long");
       return;
     }
-    setError('');
-    onAction(action);
-    setAction('');
+    setError("");
+    console.log("Submitting action:", action);
+    await onAction(action); // Wait for the action to complete
+    setAction("");
   };
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-2 text-purple-700 text-center">Player Actions</h2>
+      <h2 className="text-xl font-bold mb-2 text-purple-700 text-center">
+        Player Actions
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-2">
         <input
           type="text"
@@ -30,6 +33,7 @@ const PlayerActions = ({ onAction }) => {
           onChange={(e) => setAction(e.target.value)}
           placeholder="Enter your action..."
           className="w-full px-2 py-1 border rounded text-gray-700"
+          disabled={isLoading}
         />
         {error && (
           <motion.p
@@ -44,9 +48,10 @@ const PlayerActions = ({ onAction }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           type="submit"
-          className="w-1/2 flex mx-auto items-center justify-center bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+          className="w-1/2 flex mx-auto items-center justify-center bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 disabled:bg-gray-400"
+          disabled={isLoading}
         >
-          Submit Action
+          {isLoading ? "Processing..." : "Submit Action"}
         </motion.button>
       </form>
     </div>

@@ -78,8 +78,8 @@ export async function generateStoryElements() {
 export async function processPlayerAction(gameState, action) {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-  const prompt = `Given the current game state and player action, generate the next story beat and any updates to the game state.
-  
+  const prompt = `Given the current game state and player action, generate the next story beat. If the action could result in finding a clue, include only one new piece of evidence (if appropriate). If no new clue is found, don't include any new evidence.
+
   Current game state:
   ${JSON.stringify(gameState)}
   
@@ -88,7 +88,7 @@ export async function processPlayerAction(gameState, action) {
   
   Respond with a JSON object containing:
   1. "storyUpdate": A short paragraph describing what happens next
-  2. "gameStateUpdates": An object with any changes to the game state
+  2. "newEvidence": Either null or an object with "item" and "description" if a new clue is found
   
   Format the output as a JSON object.`;
 
@@ -97,18 +97,18 @@ export async function processPlayerAction(gameState, action) {
     const response = await result.response;
     const text = response.text();
 
-    const cleanedJSON = cleanupJSON(text);
+    console.log("Raw AI response:", text);
 
-    try {
-      return JSON.parse(cleanedJSON);
-    } catch (parseError) {
-      console.error("Error parsing JSON:", parseError);
-      console.log("Received text:", text);
-      console.log("Cleaned JSON:", cleanedJSON);
-      throw new Error(
-        "Failed to parse generated content as JSON. Please try again."
-      );
-    }
+    const cleanedJSON = cleanupJSON(text);
+    console.log("Cleaned JSON:", cleanedJSON);
+
+    const parsedResult = JSON.parse(cleanedJSON);
+    console.log("Parsed result:", parsedResult);
+
+    return {
+      storyUpdate: parsedResult.storyUpdate,
+      newEvidence: parsedResult.newEvidence,
+    };
   } catch (error) {
     console.error("Error processing player action:", error);
     throw new Error("Failed to process player action. Please try again later.");
