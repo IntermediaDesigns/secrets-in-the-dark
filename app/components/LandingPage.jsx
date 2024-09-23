@@ -1,6 +1,6 @@
 'use client';
 import React from "react";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 import Link from "next/link";
 import {
   FaMagnifyingGlass,
@@ -14,8 +14,10 @@ const FeatureCard = ({ icon, title, description }) => (
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
   >
-    <div className="text-4xl mb-4 text-indigo-600">{icon}</div>
-    <h3 className="text-xl font-bold mb-2">{title}</h3>
+    <div className="flex gap-12">
+    <div className="text-4xl mb-4 text-purple-600">{icon}</div>
+    <h3 className="text-xl font-bold mb-2 text-black">{title}</h3>
+    </div>
     <p className="text-gray-600">{description}</p>
   </motion.div>
 );
@@ -46,7 +48,7 @@ return (
             </motion.h2>
 
             <motion.p
-                className="text-xl text-center mb-12"
+                className="text-2xl text-center mb-12 tracking-wider font-sans"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
@@ -61,17 +63,17 @@ return (
                 transition={{ delay: 0.4, duration: 0.5 }}
             >
                 <FeatureCard
-                    icon={<FaMagnifyingGlass color="#9333ea" />}
+                    icon={<FaMagnifyingGlass />}
                     title="Investigate Scenes"
                     description="Explore multiple locations, gather clues, and piece together the mystery."
                 />
                 <FeatureCard
-                    icon={<FaUserSecret color="#9333ea" />}
+                    icon={<FaUserSecret />}
                     title="Interview Suspects"
                     description="Question a cast of unique characters, each with their own motives and secrets."
                 />
                 <FeatureCard
-                    icon={<FaClipboardList color="#9333ea" />}
+                    icon={<FaClipboardList />}
                     title="Track Evidence"
                     description="Collect and analyze evidence to build your case and identify the culprit."
                 />
