@@ -1,4 +1,5 @@
 import MainContent from './components/MainContent';
+import { ThemeProvider } from './context/ThemeContext';
 import './globals.css';
 
 export const metadata = {
@@ -10,7 +11,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <MainContent>{children}</MainContent>
+        <ThemeProvider>
+          <MainContent>{children}</MainContent>
+        </ThemeProvider>
       </body>
     </html>
   );

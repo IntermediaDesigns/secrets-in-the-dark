@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Navbar from "./Navbar";
 import { getCurrentUser } from "../lib/auth";
+import { ThemeContext } from "../context/ThemeContext";
 
 const MainContent = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -26,7 +28,7 @@ const MainContent = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen theme-bg-primary theme-text">
         <iframe
           src="https://lottie.host/embed/df38b62f-5fac-4390-96d5-7c21dc4932b2/toBniWeTO7.lottie"
           className="w-96 h-96"
@@ -36,10 +38,10 @@ const MainContent = ({ children }) => {
   }
 
   return (
-    <>
+    <div className="min-h-screen theme-bg-primary theme-text">
       <Navbar user={user} />
       <main>{children}</main>
-    </>
+    </div>
   );
 };
 

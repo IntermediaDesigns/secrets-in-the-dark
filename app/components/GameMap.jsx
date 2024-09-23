@@ -27,8 +27,8 @@ const GameMap = ({ locations = [], currentLocation, unlockedLocations = [], onLo
   }
 
   return (
-    <div className="border-2 border-gray-300 p-4 rounded">
-      <h2 className="text-xl font-bold mb-2 text-center text-purple-700">Game Map</h2>
+    <div className="border-2 border-gray-300 p-4 rounded bg-theme">
+      <h2 className="text-xl font-bold mb-4 text-center text-purple-700">Game Map</h2>
       <div className="grid grid-cols-2 gap-4">
         {mapData.map((location, index) => (
           <div

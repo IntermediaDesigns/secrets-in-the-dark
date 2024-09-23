@@ -4,6 +4,90 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Gilda+Display&display=swap');
 
-body {
-  font-family: 'Inter', sans-serif;
+:root {
+  --background: #ffffff;
+  --foreground: #1a202c;
+  --primary: #7e22ce;
+  --secondary: #6b7280;
+  --accent: #7e22ce;
+}
+
+[data-theme='dark'] {
+  --background: #10141b;
+  --foreground: #f7fafc;
+  --primary: #7e22ce;
+  --secondary: #9ca3af;
+  --accent: #7e22ce;
+  --background2: #2d2f34;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900 dark:text-white;
+    color: var(--foreground);
+  }
+
+  a {
+    @apply text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300;
+    color: var(--primary);
+  }
+
+  button {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .transition-theme {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* Custom styles */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Apply theme transition to all elements */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom theme classes */
+.bg-theme {
+  background-color: var(--background);
+}
+
+.bg-theme2 {
+  background-color: var(--background2);
+}
+
+.text-theme {
+  color: var(--foreground);
+}
+
+.border-theme {
+  border-color: var(--secondary);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--background);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--background);
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--background);
 }

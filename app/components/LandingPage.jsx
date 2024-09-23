@@ -25,7 +25,7 @@ const FeatureCard = ({ icon, title, description }) => (
 const LandingPage = () => {
 return (
     <div
-        className="min-h-screen bg-cover bg-center text-white pt-20"
+        className="h-[90vh] bg-cover bg-center text-white pt-20"
         style={{ backgroundImage: "url('/bkg.png')" }}
     >
         <div className="container mx-auto px-4 py-16">
@@ -39,7 +39,7 @@ return (
             </motion.h1>
 
             <motion.h2
-                className="text-3xl font-semibold text-center mb-8 font-sans"
+                className="text-white text-3xl font-semibold text-center mb-8 font-sans"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}

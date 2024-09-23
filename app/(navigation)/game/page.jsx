@@ -86,7 +86,10 @@ const GamePage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen" style={{ backgroundImage: "url('/bkg.png')" }}>
+      <div
+        className="flex justify-center items-center h-[90.1vh]"
+        style={{ backgroundImage: "url('/bkg.png')" }}
+      >
         <iframe
           src="https://lottie.host/embed/df38b62f-5fac-4390-96d5-7c21dc4932b2/toBniWeTO7.lottie"
           className="w-96 h-96"
@@ -108,13 +111,8 @@ const GamePage = () => {
   };
 
   return (
-    <div
-      className="flex flex-col min-h-screen pt-36"
-      style={{ backgroundImage: "url('/bkg.png')" }}
-    >
-      <main
-        className={`flex-grow`}
-      >
+    <div className="flex flex-col min-h-[90.1vh]" style={{ backgroundImage: "url('/bkg.png')" }}>
+      <main className={`flex-grow`}>
         {showSetup && <GameSetup onStartGame={handleStartGame} />}
         {showTutorial && <Tutorial onComplete={() => setShowTutorial(false)} />}
         {gameState && (

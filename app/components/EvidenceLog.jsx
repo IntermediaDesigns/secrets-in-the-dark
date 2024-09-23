@@ -2,10 +2,10 @@ import React from 'react';
 
 const EvidenceLog = ({ evidence }) => {
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-2 text-center text-purple-700">Evidence Log</h2>
+    <div className='bg-theme2 px-4 rounded pb-4'>
+      <h2 className="text-xl font-bold mb-2 text-center text-purple-700 pt-4">Evidence Log</h2>
       {evidence.length === 0 ? (
-        <li className="text-gray-600">No evidence collected yet.</li>
+        <li className="text-theme">No evidence collected yet.</li>
       ) : (
         <ul className="space-y-2">
           {evidence.map((item, index) => (

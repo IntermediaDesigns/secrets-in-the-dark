@@ -80,7 +80,7 @@ const AudioManager = ({ gameState }) => {
       </audio>
       <button
         onClick={toggleMute}
-        className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm"
+        className="bg-purple-700 hover:bg-purple-500 text-white font-bold py-1 px-2 rounded text-sm"
       >
         {isMuted ? "Unmute" : "Mute"}
       </button>

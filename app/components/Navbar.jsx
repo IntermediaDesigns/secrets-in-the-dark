@@ -4,9 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout } from "../lib/auth";
+import { useTheme } from "../context/ThemeContext";
 
 const Navbar = ({ user }) => {
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -18,23 +20,27 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="bg-transparent fixed top-0 z-50 w-full">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="text-white text-2xl font-bold">
-          <img src="/secret-logo.png" alt="logo" className="w-28 h-auto pt-2 hover:transform hover:scale-105" />
+    <nav className={`theme-bg-primary theme-text w-full shadow-md transition-colors duration-300 ${theme}`} >
+      <div className="container mx-auto flex justify-between items-center py-2 px-6">
+        <Link href="/" className="theme-text text-2xl font-bold">
+          <img src="/secret-logo.png" alt="logo" className="w-20 h-auto hover:transform hover:scale-105" />
         </Link>
-        <div className="mt-2">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full theme-bg-secondary theme-text-secondary hover:theme-bg-hover transform hover:scale-105"
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
           {user ? (
-            <div className="flex items-center gap-8">
-              <span className="text-white mr-4">Welcome, {user.name}</span>
-              <button>
-                <Link href='/game' className="bg-purple-700 hover:bg-purple-500 text-white font-semibold text-lg py-2.5 px-4 rounded">
-                  Play Game
-                </Link>
-              </button>
+            <div className="flex items-center gap-4">
+              <span className="theme-text mr-4">Welcome, {user.name}</span>
+              <Link href='/game' className="theme-bg-accent theme-text-accent hover:theme-bg-accent-hover font-semibold text-lg py-2 px-4 rounded transition-colors duration-300">
+                Play Game
+              </Link>
               <button
                 onClick={handleLogout}
-                className="bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded"
+                className="theme-bg-danger theme-text-danger text-red-700 hover:text-red-500 hover:theme-bg-danger-hover font-bold py-2 px-4 rounded transition-colors duration-300"
               >
                 Logout
               </button>
@@ -43,13 +49,13 @@ const Navbar = ({ user }) => {
             <div>
               <Link
                 href="/login"
-                className="text-white mr-4 hover:text-gray-300"
+                className="theme-text mr-4 hover:opacity-80 transition-opacity duration-300"
               >
                 Login
               </Link>
               <Link
                 href="/signup"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="theme-bg-accent theme-text-accent hover:theme-bg-accent-hover font-bold py-2 px-4 rounded transition-colors duration-300"
               >
                 Sign Up
               </Link>
