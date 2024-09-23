@@ -80,7 +80,7 @@ const AudioManager = ({ gameState }) => {
       </audio>
       <button
         onClick={toggleMute}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-sm"
+        className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded text-sm"
       >
         {isMuted ? "Unmute" : "Mute"}
       </button>
@@ -92,6 +92,9 @@ const AudioManager = ({ gameState }) => {
         value={volume}
         onChange={handleVolumeChange}
         className="w-24"
+        style={{
+          accentColor: '#6b46c1', // Change this to your desired color
+        }}
       />
       <span className="text-sm">Vol: {Math.round(volume * 100)}%</span>
     </div>

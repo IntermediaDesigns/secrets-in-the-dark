@@ -21,12 +21,17 @@ const Navbar = ({ user }) => {
     <nav className="bg-gray-800 p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-white text-2xl font-bold">
-          Murder Mystery Game
+          Secrets in the Dark
         </Link>
         <div>
           {user ? (
-            <div className="flex items-center">
+            <div className="flex items-center gap-8">
               <span className="text-white mr-4">Welcome, {user.name}</span>
+              <button>
+                <Link href='/game' className="bg-purple-500 hover:bg-purple-700 text-white font-semibold text-lg py-2.5 px-4 rounded">
+                  Play Game
+                </Link>
+              </button>
               <button
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
