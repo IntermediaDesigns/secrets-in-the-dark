@@ -3,9 +3,9 @@ import React from 'react';
 const EvidenceLog = ({ evidence }) => {
   return (
     <div>
-      <h2 className="text-xl font-bold mb-2">Evidence Log</h2>
+      <h2 className="text-xl font-bold mb-2 text-center text-purple-700">Evidence Log</h2>
       {evidence.length === 0 ? (
-        <p className="text-gray-600">No evidence collected yet.</p>
+        <li className="text-gray-600">No evidence collected yet.</li>
       ) : (
         <ul className="space-y-2">
           {evidence.map((item, index) => (

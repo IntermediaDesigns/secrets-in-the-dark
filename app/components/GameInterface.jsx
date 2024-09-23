@@ -5,10 +5,23 @@ import EvidenceLog from "./EvidenceLog";
 import GameMap from "./GameMap";
 import PlayerActions from "./PlayerActions";
 
-const GameInterface = ({ gameState, onAction, updateGameState }) => {
+const GameInterface = ({ gameState, onAction }) => {
+  const [aiResponse, setAiResponse] = useState("");
+
+  const handleAction = async (action) => {
+    setAiResponse("Processing your action...");
+    try {
+      const response = await onAction(action);
+      setAiResponse(
+        response.storyUpdate || "Action processed, but no specific update."
+      );
+    } catch (error) {
+      setAiResponse("Error processing action. Please try again.");
+    }
+  };
+
   const handleLocationChange = (newLocation) => {
-    console.log("Location change requested to:", newLocation);
-    onAction(`Move to ${newLocation}`);
+    handleAction(`Move to ${newLocation}`);
   };
 
   return (
@@ -23,9 +36,6 @@ const GameInterface = ({ gameState, onAction, updateGameState }) => {
         <div className="flex items-center space-x-4">
           <motion.p whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             Score: {gameState.score}
-          </motion.p>
-          <motion.p whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            Turns: {gameState.turns}
           </motion.p>
         </div>
       </motion.header>
@@ -56,9 +66,13 @@ const GameInterface = ({ gameState, onAction, updateGameState }) => {
               }
               onLocationClick={handleLocationChange}
             />
+            <div className="mt-4 p-4 bg-purple-100 rounded">
+              <h3 className="font-bold mb-2 text-purple-700">AI Response:</h3>
+              <p className="text-gray-700">{aiResponse}</p>
+            </div>
           </div>
           <div className="h-1/3 bg-gray-200 p-4">
-            <PlayerActions onAction={updateGameState} />
+            <PlayerActions onAction={handleAction} />
           </div>
         </motion.div>
         <motion.div

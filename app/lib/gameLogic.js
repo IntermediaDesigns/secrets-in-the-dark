@@ -84,7 +84,7 @@ export async function performAction(userId, gameState, action) {
     if (action.startsWith("Move to ")) {
       const newLocation = action.replace("Move to ", "");
       console.log("Attempting to move to:", newLocation);
-
+      
       if (gameState.playerProgress.unlockedLocations.includes(newLocation)) {
         console.log("Location is unlocked, updating game state");
         const updatedGameState = {
@@ -97,19 +97,20 @@ export async function performAction(userId, gameState, action) {
         await saveGame(userId, updatedGameState);
         return {
           updatedGameState,
-          storyUpdate: `You have moved to ${newLocation}.`,
+          storyUpdate: `You have moved to ${newLocation}. ${getLocationDescription(newLocation)}`,
         };
       } else {
         console.log("Location is not unlocked");
         return {
           updatedGameState: gameState,
-          storyUpdate: "You cannot move to that location yet.",
+          storyUpdate: "You cannot move to that location yet. Try investigating your current location further or collecting more evidence.",
         };
       }
     }
 
+    // For non-move actions, process with AI
     const result = await processPlayerAction(gameState, action);
-
+    
     if (!result || !result.storyUpdate || !result.gameStateUpdates) {
       throw new Error("Invalid response from AI. Please try again.");
     }
@@ -123,16 +124,6 @@ export async function performAction(userId, gameState, action) {
       },
     };
 
-    // Check if a new location should be unlocked
-    if (result.gameStateUpdates.unlockedLocation) {
-      updatedGameState.playerProgress.unlockedLocations = [
-        ...new Set([
-          ...updatedGameState.playerProgress.unlockedLocations,
-          result.gameStateUpdates.unlockedLocation,
-        ]),
-      ];
-    }
-
     await saveGame(userId, updatedGameState);
 
     return {
@@ -143,6 +134,11 @@ export async function performAction(userId, gameState, action) {
     console.error("Error performing action:", error);
     throw new Error("Failed to process action. Please try again later.");
   }
+}
+
+function getLocationDescription(location) {
+  // You can expand this function to provide more detailed descriptions based on the location
+  return `You look around ${location}. What would you like to do here?`;
 }
 
 export function checkGameCompletion(gameState) {

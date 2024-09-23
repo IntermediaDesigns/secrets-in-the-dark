@@ -22,14 +22,14 @@ const PlayerActions = ({ onAction }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-2">Player Actions</h2>
+      <h2 className="text-xl font-bold mb-2 text-purple-700 text-center">Player Actions</h2>
       <form onSubmit={handleSubmit} className="space-y-2">
         <input
           type="text"
           value={action}
           onChange={(e) => setAction(e.target.value)}
           placeholder="Enter your action..."
-          className="w-full px-2 py-1 border rounded"
+          className="w-full px-2 py-1 border rounded text-gray-700"
         />
         {error && (
           <motion.p
@@ -44,7 +44,7 @@ const PlayerActions = ({ onAction }) => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           type="submit"
-          className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="w-full bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
         >
           Submit Action
         </motion.button>

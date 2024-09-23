@@ -28,7 +28,7 @@ const GameMap = ({ locations = [], currentLocation, unlockedLocations = [], onLo
 
   return (
     <div className="border-2 border-gray-300 p-4 rounded">
-      <h2 className="text-xl font-bold mb-2">Game Map</h2>
+      <h2 className="text-xl font-bold mb-2 text-center text-purple-700">Game Map</h2>
       <div className="grid grid-cols-2 gap-4">
         {mapData.map((location, index) => (
           <div
@@ -36,9 +36,9 @@ const GameMap = ({ locations = [], currentLocation, unlockedLocations = [], onLo
             onClick={() => handleLocationClick(location)}
             className={`p-2 rounded cursor-pointer ${
               location.isCurrent
-                ? 'bg-blue-500 text-white'
+                ? 'bg-purple-500 text-white hover:transform hover:scale-105'
                 : location.isUnlocked
-                ? 'bg-gray-200 hover:bg-gray-300'
+                ? 'bg-gray-200 hover:bg-purple-300'
                 : 'bg-gray-400 text-gray-600'
             }`}
           >
