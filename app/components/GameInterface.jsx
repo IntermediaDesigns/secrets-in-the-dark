@@ -12,7 +12,8 @@ const GameInterface = ({ gameState, onAction }) => {
 
   useEffect(() => {
     console.log("Story title:", gameState.storyElements?.title);
-  }, [gameState.storyElements?.title]);
+    console.log("crimeSceneDescription:", gameState.storyElements?.crimeSceneDescription);
+  }, [gameState.storyElements?.title], [gameState.storyElements?.crimeSceneDescription]);
 
   const handleAction = async (action) => {
     setAiResponse("Processing your action...");
@@ -124,11 +125,11 @@ const GameInterface = ({ gameState, onAction }) => {
         >
           <EvidenceLog evidence={gameState.playerProgress.collectedEvidence} />
         </motion.div>
-        <div className="w-80 ml-4 mt-4 bg-theme px-4 rounded pb-4">
+        <div className="w-80 ml-4 mt-4 bg-theme px-4 rounded pb-4 h-auto">
           <h2 className="text-xl font-bold mb-2 text-center text-purple-700 pt-4">
             Crime Scene Description
           </h2>
-          <p className="text-sm text-gray-600">
+          <p className="text-md text-theme text-center tracking-wide bg-theme2 p-4 rounded">
             {gameState.storyElements.crimeSceneDescription ||
               "No description available."}
           </p>

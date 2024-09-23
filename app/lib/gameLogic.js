@@ -47,12 +47,15 @@ export async function initializeGame(userId, difficulty = "medium") {
       // Ensure there's a title, use default if not provided
       const title = storyElements.title || DEFAULT_STORY_TITLE;
 
+      const crimeSceneDescription = storyElements.crimeSceneDescription;
+
       const initialGameState = {
         userId,
         storyElements: {
           ...storyElements,
           locations, // Ensure locations are always present
           title, // Ensure title is always present
+          crimeSceneDescription,
         },
         playerProgress: {
           currentLocation: locations[0],

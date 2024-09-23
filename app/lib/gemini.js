@@ -43,7 +43,7 @@ export async function generateStoryElements() {
   Format the output as a JSON object with the following structure:
   {
     "title": "string",
-    "crimeScene": "string",
+    "crimeSceneDescription": "string",
     "suspects": [{"name": "string", "description": "string"}],
     "evidence": [{"item": "string", "description": "string"}],
     "locations": ["string"],
