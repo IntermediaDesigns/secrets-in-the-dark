@@ -18,7 +18,7 @@ const Navbar = ({ user }) => {
   };
 
   return (
-    <nav className="bg-transparent fixed w-full">
+    <nav className="bg-transparent fixed top-0 z-50 w-full">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-white text-2xl font-bold">
           <img src="/secret-logo.png" alt="logo" className="w-28 h-auto pt-2 hover:transform hover:scale-105" />
