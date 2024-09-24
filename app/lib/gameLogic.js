@@ -147,10 +147,7 @@ export async function performAction(userId, gameState, action) {
       storyUpdate = result.storyUpdate;
 
       if (result.newEvidence) {
-        const isDuplicate =
-          updatedGameState.playerProgress.collectedEvidence.some(
-            (evidence) => evidence.item === result.newEvidence.item
-          );
+        const isDuplicate = isDuplicateEvidence(updatedGameState.playerProgress.collectedEvidence, result.newEvidence);
 
         if (!isDuplicate) {
           updatedGameState = {
@@ -159,30 +156,35 @@ export async function performAction(userId, gameState, action) {
               ...updatedGameState.playerProgress,
               collectedEvidence: [
                 ...updatedGameState.playerProgress.collectedEvidence,
-                result.newEvidence,
-              ],
-            },
+                result.newEvidence
+              ]
+            }
           };
           newEvidenceAdded = true;
           // storyUpdate += `\n\nNew evidence found: ${result.newEvidence.item}`;
         } else {
-          storyUpdate += `\n\nYou've already collected this evidence: ${result.newEvidence.item}`;
+          // Replace the AI-generated story update with a reminder about existing evidence
+          storyUpdate = `You take another look at the ${result.newEvidence.item} you found earlier. ${updatedGameState.playerProgress.collectedEvidence.find(e => e.item.toLowerCase() === result.newEvidence.item.toLowerCase()).description}`;
         }
       }
     }
 
     await saveGame(userId, updatedGameState);
 
-    console.log("Returning from performAction:", {
-      updatedGameState,
-      storyUpdate,
-      newEvidenceAdded,
-    });
+    console.log("Returning from performAction:", { updatedGameState, storyUpdate, newEvidenceAdded });
     return { updatedGameState, storyUpdate, newEvidenceAdded };
   } catch (error) {
     console.error("Error performing action:", error);
     throw error;
   }
+}
+
+function isDuplicateEvidence(collectedEvidence, newEvidence) {
+  return collectedEvidence.some(evidence => 
+    evidence.item.toLowerCase() === newEvidence.item.toLowerCase() ||
+    (evidence.description && newEvidence.description && 
+     evidence.description.toLowerCase().includes(newEvidence.description.toLowerCase()))
+  );
 }
 
 function getLocationDescription(location) {

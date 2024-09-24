@@ -78,14 +78,14 @@ export async function generateStoryElements() {
 export async function processPlayerAction(gameState, action) {
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-  // Prepare a summary of established facts
-  const establishedFacts = prepareEstablishedFacts(gameState);
+  // Prepare a summary of established facts and existing evidence
+  const context = prepareContext(gameState);
 
-  const prompt = `You are assisting in an interactive murder mystery game. Maintain consistency with the following established facts:
+  const prompt = `You are assisting in an interactive murder mystery game. Maintain strict consistency with the following established facts and existing evidence:
 
-${establishedFacts}
+${context}
 
-Given the current game state and player action, generate the next story beat. If the action could result in finding a clue, include only one new piece of evidence (if appropriate and consistent with established facts). If no new clue is found or the action would contradict established facts, don't include any new evidence.
+Given the current game state and player action, generate the next story beat. If the action could result in finding a clue, include only one new piece of evidence (if appropriate and consistent with established facts). Do not duplicate or contradict existing evidence. If no new clue is found or the action would contradict established facts, don't include any new evidence.
 
 Current game state:
 ${JSON.stringify(gameState)}
@@ -94,8 +94,8 @@ Player action:
 ${action}
 
 Respond with a JSON object containing:
-1. "storyUpdate": A short paragraph describing what happens next, ensuring consistency with established facts
-2. "newEvidence": Either null or an object with "item" and "description" if a new, consistent clue is found
+1. "storyUpdate": A short paragraph describing what happens next, ensuring consistency with established facts and existing evidence
+2. "newEvidence": Either null or an object with "item" and "description" if a new, consistent clue is found. Ensure this is not a duplicate of existing evidence.
 
 Format the output as a JSON object.`;
 
@@ -114,38 +114,35 @@ Format the output as a JSON object.`;
 
     // Verify consistency
     if (isConsistentWithFacts(parsedResult, gameState)) {
-      return {
-        storyUpdate: parsedResult.storyUpdate,
-        newEvidence: parsedResult.newEvidence,
-      };
+      return parsedResult;
     } else {
       throw new Error(
-        "Generated content is inconsistent with established facts."
+        "Generated content is inconsistent with established facts or existing evidence."
       );
     }
   } catch (error) {
     console.error("Error processing player action:", error);
-    throw new Error("Failed to process player action. Please try again later.");
+    throw new Error(
+      "Failed to process player action consistently. Please try again."
+    );
   }
 }
 
-function prepareEstablishedFacts(gameState) {
-  let facts = `Crime Scene: ${gameState.storyElements.crimeSceneDescription}\n`;
-  facts += "Collected Evidence:\n";
+function prepareContext(gameState) {
+  let context = `Crime Scene: ${gameState.storyElements.crimeSceneDescription}\n\n`;
+  context += "Existing Evidence:\n";
   gameState.playerProgress.collectedEvidence.forEach((evidence) => {
-    facts += `- ${evidence.item}: ${evidence.description}\n`;
+    context += `- ${evidence.item}: ${evidence.description}\n`;
   });
   // Add any other relevant facts from the game state
-  return facts;
+  return context;
 }
 
 function isConsistentWithFacts(generatedContent, gameState) {
-  // Implement logic to check if the generated content contradicts established facts
-  // This could involve keyword matching, comparing locations of evidence, etc.
-  // Return true if consistent, false if inconsistent
-
-  // Example (expand as needed):
+  // Implement more rigorous consistency checks
   const storyLower = generatedContent.storyUpdate.toLowerCase();
+
+  // Check for contradictions with existing evidence
   for (let evidence of gameState.playerProgress.collectedEvidence) {
     if (
       storyLower.includes(evidence.item.toLowerCase()) &&
@@ -154,5 +151,21 @@ function isConsistentWithFacts(generatedContent, gameState) {
       return false; // Contradiction found
     }
   }
+
+  // Check if new evidence is actually new
+  if (generatedContent.newEvidence) {
+    const isDuplicate = gameState.playerProgress.collectedEvidence.some(
+      (existing) =>
+        existing.item.toLowerCase() ===
+          generatedContent.newEvidence.item.toLowerCase() ||
+        existing.description
+          .toLowerCase()
+          .includes(generatedContent.newEvidence.description.toLowerCase())
+    );
+    if (isDuplicate) {
+      return false; // Duplicate evidence found
+    }
+  }
+
   return true;
 }
