@@ -117,20 +117,40 @@ export async function performAction(userId, gameState, action) {
       }
     } else {
       // For non-move actions, process with AI
-      console.log("gameLogic: Processing with AI");
-      const result = await processPlayerAction(gameState, action);
-      console.log("gameLogic: AI processing result:", result);
+      console.log("Processing with AI");
+      let retries = 3;
+      let result;
 
-      if (!result || !result.storyUpdate) {
-        throw new Error("Invalid response from AI. Please try again.");
+      while (retries > 0) {
+        try {
+          result = await processPlayerAction(gameState, action);
+          break; // If successful, exit the loop
+        } catch (error) {
+          console.error(
+            `AI processing error (${retries} retries left):`,
+            error
+          );
+          retries--;
+          if (retries === 0) {
+            // If all retries fail, provide a generic response
+            result = {
+              storyUpdate:
+                "You investigate the area, but find nothing of significance at this time.",
+              newEvidence: null,
+            };
+          }
+        }
       }
+
+      console.log("AI processing result:", result);
 
       storyUpdate = result.storyUpdate;
 
       if (result.newEvidence) {
-        const isDuplicate = updatedGameState.playerProgress.collectedEvidence.some(
-          evidence => evidence.item === result.newEvidence.item
-        );
+        const isDuplicate =
+          updatedGameState.playerProgress.collectedEvidence.some(
+            (evidence) => evidence.item === result.newEvidence.item
+          );
 
         if (!isDuplicate) {
           updatedGameState = {
@@ -139,12 +159,12 @@ export async function performAction(userId, gameState, action) {
               ...updatedGameState.playerProgress,
               collectedEvidence: [
                 ...updatedGameState.playerProgress.collectedEvidence,
-                result.newEvidence
-              ]
-            }
+                result.newEvidence,
+              ],
+            },
           };
           newEvidenceAdded = true;
-          storyUpdate += `\n\nNew evidence found: ${result.newEvidence.item}`;
+          // storyUpdate += `\n\nNew evidence found: ${result.newEvidence.item}`;
         } else {
           storyUpdate += `\n\nYou've already collected this evidence: ${result.newEvidence.item}`;
         }
@@ -153,14 +173,14 @@ export async function performAction(userId, gameState, action) {
 
     await saveGame(userId, updatedGameState);
 
-    console.log("gameLogic: Returning from performAction:", {
+    console.log("Returning from performAction:", {
       updatedGameState,
       storyUpdate,
       newEvidenceAdded,
     });
     return { updatedGameState, storyUpdate, newEvidenceAdded };
   } catch (error) {
-    console.error("gameLogic: Error performing action:", error);
+    console.error("Error performing action:", error);
     throw error;
   }
 }
