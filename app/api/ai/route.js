@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { generateStoryElements, processPlayerAction } from '../../../lib/gemini';
+import { generateStoryElements, processPlayerAction } from '../../lib/gemini';
 
 export async function POST(request) {
   const { action, gameState } = await request.json();
