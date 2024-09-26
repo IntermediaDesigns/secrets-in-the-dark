@@ -1,29 +1,55 @@
 "use client";
 
-import React, { useState } from "react";
-import { signUp, loginWithGoogle } from "../../lib/auth";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getLoggedInUser } from "@/app/lib/appwrite";
+import { signUpWithEmail } from "@/app/actions/auth";
 
-const SignUpPage = () => {
+export default async function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = await getLoggedInUser();
+      if (user) {
+        setShouldRedirect(true);
+      }
+    };
+    checkUser();
+  }, []);
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      router.push("/");
+    }
+  }, [shouldRedirect, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await signUp(email, password, name);
+    const formData = new FormData(e.target);
+    const result = await signUpWithEmail(formData);
+
+    if (result.success) {
       router.push("/login");
-    } catch (error) {
-      setError(error.message);
+    } else {
+      setError(
+        result.error || "An error occurred during sign up. Please try again."
+      );
     }
   };
 
   const handleGoogleSignUp = () => {
     loginWithGoogle();
   };
+
+  if (shouldRedirect) {
+    return null; // or a loading spinner
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -33,7 +59,7 @@ const SignUpPage = () => {
             Sign up for an account
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} action={signUpWithEmail} >
           <input type="hidden" name="remember" value="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -76,6 +102,7 @@ const SignUpPage = () => {
                 name="password"
                 type="password"
                 autoComplete="current-password"
+                minLength={8}
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
@@ -124,6 +151,4 @@ const SignUpPage = () => {
       </div>
     </div>
   );
-};
-
-export default SignUpPage;
+}

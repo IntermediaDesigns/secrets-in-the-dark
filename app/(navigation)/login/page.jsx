@@ -5,19 +5,20 @@ import { login, loginWithGoogle } from "../../lib/auth";
 import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await login(email, password);
-      router.push("/game");
-    } catch (error) {
-      setError(error.message);
-    }
+      e.preventDefault();
+      try {
+          await login(email, password);
+          router.push('/game');
+      } catch (error) {
+          console.error('Login error:', error);
+          setError('Failed to login. Please check your credentials and try again.');
+      }
   };
 
   const handleGoogleLogin = () => {

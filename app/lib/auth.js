@@ -1,4 +1,4 @@
-import { Client, Account } from "appwrite";
+import { Client, Account, ID } from "appwrite";
 
 const client = new Client()
   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
@@ -8,8 +8,20 @@ const account = new Account(client);
 
 export const signUp = async (email, password, name) => {
   try {
-    const response = await account.create("unique()", email, password, name);
-    return response;
+    // First, create the user account
+    const user = await account.create(ID.unique(), email, password, name);
+    console.log("User created:", user);
+
+    // Then, create a session for the new user
+    try {
+      const session = await account.createEmailSession(email, password);
+      console.log("Session created:", session);
+      return { user, session };
+    } catch (sessionError) {
+      console.error("Error creating session:", sessionError);
+      // Return the user even if session creation fails
+      return { user, sessionError };
+    }
   } catch (error) {
     console.error("Error during sign up:", error);
     throw error;
@@ -19,7 +31,13 @@ export const signUp = async (email, password, name) => {
 export const login = async (email, password) => {
   try {
     const session = await account.createEmailSession(email, password);
-    return session;
+    console.log("Session created:", session);
+
+    // Verify the session was created
+    const user = await account.get();
+    console.log("User logged in:", user);
+
+    return { user, session };
   } catch (error) {
     console.error("Error during login:", error);
     throw error;
@@ -28,7 +46,7 @@ export const login = async (email, password) => {
 
 export const logout = async () => {
   try {
-    await account.deleteSession("current");
+    await account.deleteSession('current');
   } catch (error) {
     console.error("Error during logout:", error);
     throw error;
@@ -38,10 +56,11 @@ export const logout = async () => {
 export const getCurrentUser = async () => {
   try {
     const user = await account.get();
+    console.log("Current user:", user);
     return user;
   } catch (error) {
-    // If the error is due to the user not being logged in, return null instead of throwing an error
     if (error.code === 401) {
+      console.log("No authenticated user found");
       return null;
     }
     console.error("Error getting current user:", error);
@@ -50,12 +69,8 @@ export const getCurrentUser = async () => {
 };
 
 export const isAuthenticated = async () => {
-  try {
-    const user = await getCurrentUser();
-    return !!user;
-  } catch {
-    return false;
-  }
+  const user = await getCurrentUser();
+  return user !== null;
 };
 
 export const loginWithGoogle = () => {
